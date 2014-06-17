@@ -38,6 +38,7 @@
  * by the user before to call AlFreeList().
  *
  * On error, NULL is returned. Otherwise the pointer to the new list. */
+//#创建list对象。可以用AlFreeList()释放链表。但每个node的私有成员需要用户先手动释放，再调用AlFreeList()
 list *listCreate(void)
 {
     struct list *list;
@@ -64,8 +65,8 @@ void listRelease(list *list)
     len = list->len;
     while(len--) {
         next = current->next;
-        if (list->free) list->free(current->value);
-        zfree(current);
+        if (list->free) list->free(current->value);	//#析构节点对象内的节点值指针指向的空间
+        zfree(current);	//#析构节点对象本身
         current = next;
     }
     zfree(list);
@@ -129,13 +130,13 @@ list *listInsertNode(list *list, listNode *old_node, void *value, int after) {
     if ((node = zmalloc(sizeof(*node))) == NULL)
         return NULL;
     node->value = value;
-    if (after) {
+    if (after) {	//#插在当前old_node之后
         node->prev = old_node;
         node->next = old_node->next;
         if (list->tail == old_node) {
             list->tail = node;
         }
-    } else {
+    } else {	//#插入到当前old_node之前
         node->next = old_node;
         node->prev = old_node->prev;
         if (list->head == old_node) {
@@ -194,11 +195,13 @@ void listReleaseIterator(listIter *iter) {
 }
 
 /* Create an iterator in the list private iterator structure */
+//#所谓的listRewind就是将迭代器重新置头
 void listRewind(list *list, listIter *li) {
     li->next = list->head;
     li->direction = AL_START_HEAD;
 }
 
+//#所谓的listRewindTail就是将迭代器重新置尾
 void listRewindTail(list *list, listIter *li) {
     li->next = list->tail;
     li->direction = AL_START_TAIL;
@@ -218,13 +221,15 @@ void listRewindTail(list *list, listIter *li) {
  * }
  *
  * */
+ //#注：实际是返回迭代器iter的当前节点，然后在函数内部实现迭代器指针指向下一个元素
 listNode *listNext(listIter *iter)
 {
     listNode *current = iter->next;
 
+	// 根据方向选择下一个节点的指针
     if (current != NULL) {
         if (iter->direction == AL_START_HEAD)
-            iter->next = current->next;
+            iter->next = current->next;	//#指向下一个
         else
             iter->next = current->prev;
     }
@@ -239,6 +244,7 @@ listNode *listNext(listIter *iter)
  * the original node is used as value of the copied node.
  *
  * The original list both on success or error is never modified. */
+ 
 list *listDup(list *orig)
 {
     list *copy;
@@ -251,6 +257,7 @@ list *listDup(list *orig)
     copy->free = orig->free;
     copy->match = orig->match;
     iter = listGetIterator(orig, AL_START_HEAD);
+	//#node从第一个节点开始拷贝
     while((node = listNext(iter)) != NULL) {
         void *value;
 
@@ -262,8 +269,8 @@ list *listDup(list *orig)
                 return NULL;
             }
         } else
-            value = node->value;
-        if (listAddNodeTail(copy, value) == NULL) {
+            value = node->value;	//?为什么不需要拷贝一份
+			if (listAddNodeTail(copy, value) == NULL) {
             listRelease(copy);
             listReleaseIterator(iter);
             return NULL;
@@ -325,6 +332,7 @@ listNode *listIndex(list *list, long index) {
 }
 
 /* Rotate the list removing the tail node and inserting it to the head. */
+//#把尾节点移到头上
 void listRotate(list *list) {
     listNode *tail = list->tail;
 
