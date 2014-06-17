@@ -27,7 +27,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+//#配置文件解析,读取/设置系统配置
+ 
 #include "redis.h"
 
 #include <fcntl.h>

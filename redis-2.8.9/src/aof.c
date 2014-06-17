@@ -26,7 +26,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+//#全称为append only file，作用就是记录每次的写操作,在遇到断电等问题时可以用它来恢复数据库状态。
+//#但不是bin的,而是text的，也就是说，aof保存的是写命令本身。通过执行aof文件中的命令即可恢复数据库状态。
 #include "redis.h"
 #include "bio.h"
 #include "rio.h"

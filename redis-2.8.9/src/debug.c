@@ -26,6 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+//#用于调试
 
 #include "redis.h"
 #include "sha1.h"   /* SHA1 is used for DEBUG DIGEST */

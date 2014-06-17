@@ -29,17 +29,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+//#用于Redis的事件处理，包括句柄事件和超时事件。
 #ifndef __AE_H__
 #define __AE_H__
 
+//#定义事件返回值
 #define AE_OK 0
 #define AE_ERR -1
 
+//#定义事件状态：无权限，可读，可写
 #define AE_NONE 0
 #define AE_READABLE 1
 #define AE_WRITABLE 2
 
+//#定义事件类型：文件事件，时间事件，多事件，//?完成等待
 #define AE_FILE_EVENTS 1
 #define AE_TIME_EVENTS 2
 #define AE_ALL_EVENTS (AE_FILE_EVENTS|AE_TIME_EVENTS)
@@ -78,6 +81,7 @@ typedef struct aeTimeEvent {
 } aeTimeEvent;
 
 /* A fired event */
+//#触发的事件
 typedef struct aeFiredEvent {
     int fd;
     int mask;

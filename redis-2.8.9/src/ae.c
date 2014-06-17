@@ -46,6 +46,7 @@
 
 /* Include the best multiplexing layer supported by this system.
  * The following should be ordered by performances, descending. */
+ //#事件循环模式选择
 #ifdef HAVE_EVPORT
 #include "ae_evport.c"
 #else
